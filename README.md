@@ -2,90 +2,71 @@
 
 ## Task Name: Creating a Kubernetes Cluster for a Containerized Node.js Application
 
-In this task, I deployed the Node.js application (from Task 5.1P) onto a Kubernetes cluster using Minikube and Docker. Below are the steps I followed:
+In this task, I deployed my Node.js application (from Task 5.1P) onto a Kubernetes cluster using Minikube and Docker. Below are the steps I followed during this task.
 
-### Step 1: Started on CMD
+### Step 1: Started on Command Prompt (CMD)
 
-- First, I ran `minikube start --driver=docker` to start Kubernetes.
-- Tried `eval $(minikube docker-env)` but got an error because it doesn't work in CMD.
-- I built the Docker image with `docker build -t node-app:v1 .`, but Kubernetes gave `ImagePullBackOff`.
+- I began the task by using the Windows Command Prompt.
+- I ran the command `minikube start --driver=docker` to start the Kubernetes cluster.
+- I tried running `eval $(minikube docker-env)` but got an error because the `eval` command does not work in CMD.
+- Then I built the Docker image using `docker build -t node-app:v1 .`
+- However, when I deployed the application using Kubernetes, I received an error: `ImagePullBackOff`. The pod was unable to pull the local image.
 
 ### Step 2: Switched to PowerShell
 
-- Closed CMD and opened PowerShell.
-- Ran the command to point Docker to Minikube:
+- I closed CMD and opened PowerShell to proceed with the task.
+- I ran the following command to point Docker to Minikube’s internal Docker engine:
 
-& minikube -p minikube docker-env --shell powershell | Invoke-Expression
+  `& minikube -p minikube docker-env --shell powershell | Invoke-Expression`
 
-arduino
-Copy
-Edit
+- Then I rebuilt the Docker image again using the same command:
 
-- Rebuilt the image:
+  `docker build -t node-app:v1 .`
 
-docker build -t node-app:v1 .
+### Step 3: Created Kubernetes Files
 
-yaml
-Copy
-Edit
-
-### Step 3: Created Deployment and Service YAML
-
-- Created `deployment.yaml` and added:
+- I created a `deployment.yaml` file to deploy the Node.js container.
+- I made sure to set the imagePullPolicy to "Never" to tell Kubernetes not to try to pull the image from Docker Hub:
 
 ```yaml
 image: node-app:v1
 imagePullPolicy: Never
-Also created service.yaml to expose the app on port 30036.
+```
 
-Step 4: Applied Kubernetes Configuration
-Applied using:
+- I also created a `service.yaml` file to expose the application on a NodePort (30036).
 
-nginx
-Copy
-Edit
-kubectl apply -f deployment.yaml
-kubectl apply -f service.yaml
-Checked pod status with:
+### Step 4: Deployed Application to Kubernetes
 
-arduino
-Copy
-Edit
-kubectl get pods
-Step 5: Accessed the App
-Ran:
+- I deployed the application using:
 
-css
-Copy
-Edit
-minikube service node-app-service --url
-Opened the local URL in browser and verified the app is running.
+  `kubectl apply -f deployment.yaml`  
+  `kubectl apply -f service.yaml`
 
-Step 6: Checked Logs
-Used:
+- I verified the pod status using:
 
-php-template
-Copy
-Edit
-kubectl logs <pod-name>
-Files Included
-Dockerfile
+  `kubectl get pods`
 
-deployment.yaml
+- This time, the pod was in "Running" status, which confirmed that the application was successfully deployed.
 
-service.yaml
+### Step 5: Accessed the Application in Browser
 
-README.md
+- I ran the command:
 
-yaml
-Copy
-Edit
+  `minikube service node-app-service --url`
+
+- It returned a local URL (like `http://127.0.0.1:51503`) which I opened in the browser and saw my Node.js app running successfully.
+
+### Step 6: Verified Application Logs
+
+- Finally, I ran the following command to see container logs and confirm everything was working:
+
+  `kubectl logs <pod-name>`
+
+## Files Included in This Project
+
+- Dockerfile  
+- deployment.yaml  
+- service.yaml  
+- README.md
 
 ---
-
-Now commit and push it to GitHub:
-
-```bash
-git add README.md
-git commit -m "Added README.md with deployment steps"
-git push
