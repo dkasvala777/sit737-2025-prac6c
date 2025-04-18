@@ -3,7 +3,7 @@ const app = express();
 
 // Serve the HTML file
 app.get('/', (req, res) => {
-  res.send('<h1>Hello, World!</h1>');
+  res.send('This is the updated version!');
 });
 
 // Health check endpoint
@@ -15,4 +15,3 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
